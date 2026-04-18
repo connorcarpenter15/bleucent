@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
-import { env } from './env.js';
+import { env } from './env';
 
 const ISSUER = 'bleucent-web';
 const AUDIENCE = 'bleucent-realtime';

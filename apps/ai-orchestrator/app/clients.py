@@ -74,7 +74,7 @@ async def broadcast_chunk(
 ) -> None:
     """Mirror an event to the realtime telemetry channel.
 
-    Used to push `ai_response_chunk` and `ai_prompt` events so God Mode sees
+    Used to push `ai_response_chunk` and `ai_prompt` events so the interviewer console sees
     the AI conversation as it happens. Failures are swallowed; mirroring is
     best-effort and must never block the candidate-facing stream.
     """

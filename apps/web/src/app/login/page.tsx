@@ -1,73 +1,58 @@
-'use client';
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Container,
+} from '@bleucent/ui';
+import { SiteShell } from '@/components/SiteShell';
+import { LoginForm } from './login-form';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Button, Card, CardBody, CardHeader, CardTitle, Input } from '@bleucent/ui';
-import { signIn } from '@/lib/auth-client';
+export const metadata = { title: 'Sign in' };
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const result = await signIn.email({ email, password });
-    setLoading(false);
-    if (result.error) {
-      setError(result.error.message ?? 'Sign in failed');
-      return;
-    }
-    router.push('/dashboard');
-  }
-
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Interviewer sign in</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Email</span>
-              <Input
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Password</span>
-              <Input
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-            {error && (
-              <p className="rounded-md border border-red-700/60 bg-red-900/30 px-3 py-2 text-sm text-red-200">
-                {error}
-              </p>
-            )}
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
-            <p className="pt-2 text-center text-xs text-slate-400">
-              No account yet? <Link href="/signup">Create an organization</Link>.
+    <SiteShell>
+      <section className="relative overflow-hidden">
+        <div className="bleucent-glow pointer-events-none absolute inset-0" />
+        <Container size="lg" className="grid gap-10 py-20 md:grid-cols-[1.1fr_1fr]">
+          <div className="hidden flex-col justify-center md:flex">
+            <Badge tone="accent" dot>
+              Interviewer access
+            </Badge>
+            <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-surface-50">
+              Welcome back.
+            </h1>
+            <p className="mt-3 max-w-md text-surface-400">
+              Sign in to open your dashboard, schedule a new loop, or jump into the
+              live console for an interview already in flight.
             </p>
-          </form>
-        </CardBody>
-      </Card>
-    </main>
+            <ul className="mt-8 flex flex-col gap-3 text-sm text-surface-300">
+              {[
+                'Live mirror of the candidate&apos;s editor and canvas',
+                'Streaming AI prompts + responses, in chronological order',
+                'Inject constraints mid-interview without breaking the flow',
+              ].map((line) => (
+                <li key={line} className="flex items-start gap-3">
+                  <span className="mt-1 h-1.5 w-1.5 flex-none rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
+                  <span dangerouslySetInnerHTML={{ __html: line }} />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Card tone="raised">
+            <CardHeader>
+              <CardTitle>Sign in</CardTitle>
+              <Badge tone="info">Email + password</Badge>
+            </CardHeader>
+            <CardBody>
+              <LoginForm />
+            </CardBody>
+          </Card>
+        </Container>
+      </section>
+    </SiteShell>
   );
 }

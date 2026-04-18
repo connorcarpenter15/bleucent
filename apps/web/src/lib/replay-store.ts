@@ -1,5 +1,5 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { env } from './env.js';
+import { env } from './env';
 
 let cached: S3Client | null = null;
 

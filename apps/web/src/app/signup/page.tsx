@@ -1,103 +1,58 @@
-'use client';
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Container,
+} from '@bleucent/ui';
+import { SiteShell } from '@/components/SiteShell';
+import { SignupForm } from './signup-form';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button, Card, CardBody, CardHeader, CardTitle, Input } from '@bleucent/ui';
-import { authClient, signUp } from '@/lib/auth-client';
-
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-    .slice(0, 40);
-}
+export const metadata = { title: 'Create an organization' };
 
 export default function SignupPage() {
-  const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [orgName, setOrgName] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    const userResult = await signUp.email({ name, email, password });
-    if (userResult.error) {
-      setLoading(false);
-      setError(userResult.error.message ?? 'Sign up failed');
-      return;
-    }
-
-    const orgResult = await authClient.organization.create({
-      name: orgName || `${name}'s team`,
-      slug: slugify(orgName || name) || `org-${Date.now()}`,
-    });
-    setLoading(false);
-    if (orgResult.error) {
-      setError(`Account created but organization setup failed: ${orgResult.error.message}`);
-      return;
-    }
-    router.push('/dashboard');
-  }
-
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Create your organization</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Your name</span>
-              <Input required value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Work email</span>
-              <Input
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Password</span>
-              <Input
-                type="password"
-                autoComplete="new-password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-sm">
-              <span>Organization name</span>
-              <Input
-                placeholder="Acme Engineering"
-                value={orgName}
-                onChange={(e) => setOrgName(e.target.value)}
-              />
-            </label>
-            {error && (
-              <p className="rounded-md border border-red-700/60 bg-red-900/30 px-3 py-2 text-sm text-red-200">
-                {error}
-              </p>
-            )}
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Creating...' : 'Create account'}
-            </Button>
-          </form>
-        </CardBody>
-      </Card>
-    </main>
+    <SiteShell>
+      <section className="relative overflow-hidden">
+        <div className="bleucent-glow pointer-events-none absolute inset-0" />
+        <Container size="lg" className="grid gap-10 py-20 md:grid-cols-[1.1fr_1fr]">
+          <div className="hidden flex-col justify-center md:flex">
+            <Badge tone="accent" dot>
+              Get started
+            </Badge>
+            <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-surface-50">
+              Spin up an organization in under a minute.
+            </h1>
+            <p className="mt-3 max-w-md text-surface-400">
+              You&apos;ll get a dashboard, an invite-link generator, and a fresh Neon
+              branch per interview the moment you create one.
+            </p>
+            <ul className="mt-8 flex flex-col gap-3 text-sm text-surface-300">
+              {[
+                'Free to try, no credit card required',
+                'One workspace per interview, torn down at end',
+                'Built on Better Auth — your data, your tenants',
+              ].map((line) => (
+                <li key={line} className="flex items-start gap-3">
+                  <span className="mt-1 h-1.5 w-1.5 flex-none rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Card tone="raised">
+            <CardHeader>
+              <CardTitle>Create your organization</CardTitle>
+              <Badge tone="accent">Free</Badge>
+            </CardHeader>
+            <CardBody>
+              <SignupForm />
+            </CardBody>
+          </Card>
+        </Container>
+      </section>
+    </SiteShell>
   );
 }

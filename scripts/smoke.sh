@@ -48,4 +48,4 @@ green "All public endpoints reachable."
 echo
 echo "Next: interactively sign up at $WEB/signup, create an interview,"
 echo "open the candidate join link in an incognito window, and verify that"
-echo "edits in the Monaco editor appear in the interviewer's God Mode tab."
+echo "edits in the Monaco editor appear in the interviewer's console tab."

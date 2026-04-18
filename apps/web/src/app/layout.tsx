@@ -1,15 +1,33 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'Bleucent',
-  description: 'Synchronous, multi-tenant interview platform.',
+  title: {
+    default: 'Bleucent · Synchronous technical interviews',
+    template: '%s · Bleucent',
+  },
+  description:
+    'Bleucent runs synchronous, observable technical interviews — a real IDE and system-design canvas for the candidate, a live console for the interviewer, and perfect playback after the fact.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen antialiased">{children}</body>
+    <html lang="en" className={`dark ${inter.variable} ${mono.variable}`}>
+      <body className="min-h-screen bg-surface-950 font-sans antialiased">{children}</body>
     </html>
   );
 }

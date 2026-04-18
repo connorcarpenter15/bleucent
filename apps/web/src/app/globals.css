@@ -4,24 +4,99 @@
 
 :root {
   color-scheme: dark;
+  --bleucent-accent: #2f74ff;
+  --bleucent-accent-soft: rgba(47, 116, 255, 0.15);
+  --bleucent-accent-strong: #5390ff;
+  --bleucent-surface-950: #09090b;
+  --bleucent-surface-900: #18181b;
+  --bleucent-surface-850: #1f1f23;
+  --bleucent-surface-800: #27272a;
+  --bleucent-surface-700: #3f3f46;
 }
 
 html,
 body {
-  @apply bg-slate-950 text-slate-100;
+  @apply bg-surface-950 text-surface-100;
   min-height: 100vh;
 }
 
 body {
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  @apply text-blue-400 hover:text-blue-300;
+  @apply text-accent-300 transition-colors hover:text-accent-200;
 }
 
-/* Monaco editor / React Flow play nicely with dark backgrounds */
+/* Subtle grid backdrop, only shown on full-bleed marketing surfaces. */
+.bleucent-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+}
+
+.bleucent-glow {
+  background-image: radial-gradient(
+    60% 50% at 50% 0%,
+    rgba(47, 116, 255, 0.2) 0%,
+    rgba(47, 116, 255, 0) 70%
+  );
+}
+
+.bleucent-hairline {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(47, 116, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+::selection {
+  background: var(--bleucent-accent);
+  color: white;
+}
+
+/* Scrollbar styling for chrome-style surfaces. */
+* {
+  scrollbar-color: #3f3f46 transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #27272a;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #3f3f46;
+}
+
+/* Monaco editor / React Flow live happily on the dark surfaces. */
 .react-flow__pane,
 .react-flow__renderer {
-  @apply bg-slate-950;
+  @apply bg-surface-950;
+}
+
+.react-flow__node {
+  @apply !border-surface-700 !bg-surface-900 !text-surface-100;
+}
+
+.react-flow__edge-path {
+  stroke: rgba(132, 132, 142, 0.6);
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--bleucent-accent);
+}
+
+.react-flow__controls,
+.react-flow__minimap {
+  @apply !border-surface-800 !bg-surface-900;
 }

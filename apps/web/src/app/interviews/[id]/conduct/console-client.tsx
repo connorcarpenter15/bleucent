@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Badge, Button, Input } from '@bleucent/ui';
+import { Badge, Button, Input, Logo } from '@bleucent/ui';
 import { CodeEditor } from '@/components/CodeEditor';
 import { Canvas } from '@/components/Canvas';
 import { useRealtimeToken } from '@/lib/use-realtime-token';
@@ -41,7 +41,7 @@ type AiStream = {
   done: boolean;
 };
 
-export function GodMode({
+export function InterviewerConsole({
   interviewId,
   title,
   candidateName,
@@ -184,34 +184,54 @@ export function GodMode({
     }
   }
 
+  const connTone = tokenError
+    ? 'danger'
+    : !token
+      ? 'warning'
+      : synced
+        ? 'success'
+        : 'warning';
+  const connLabel = tokenError
+    ? 'auth error'
+    : !token
+      ? 'connecting'
+      : synced
+        ? 'mirroring'
+        : 'syncing';
+  const statusTone =
+    status === 'live' ? 'success' : status === 'completed' ? 'neutral' : 'info';
+
   return (
-    <div className="flex h-screen flex-col bg-slate-950 text-slate-100">
-      <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900/40 px-4 py-2">
+    <div className="flex h-screen flex-col bg-surface-950 text-surface-100">
+      <header className="relative z-10 flex items-center justify-between border-b border-surface-800 bg-surface-925/90 px-4 py-2 backdrop-blur">
+        <div className="bleucent-hairline absolute inset-x-0 bottom-0 h-px opacity-40" />
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold">{title}</span>
-          <span className="text-xs text-slate-500">candidate: {candidateName}</span>
-          <Badge tone={status === 'live' ? 'success' : status === 'completed' ? 'neutral' : 'info'}>
+          <Logo size="sm" />
+          <span className="hidden h-4 w-px bg-surface-700 sm:inline-block" />
+          <span className="text-sm font-semibold text-surface-50">{title}</span>
+          <span className="text-xs text-surface-500">candidate: {candidateName}</span>
+          <Badge tone={statusTone} dot>
             {status}
           </Badge>
-          <Badge tone={synced ? 'success' : tokenError ? 'danger' : 'warning'}>
-            {tokenError ? 'auth error' : !token ? 'connecting' : synced ? 'mirroring' : 'syncing'}
+          <Badge tone={connTone} dot>
+            {connLabel}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs uppercase tracking-wider text-amber-400">God Mode</span>
+        <div className="flex items-center gap-3">
+          <Badge tone="accent">Interviewer console</Badge>
           <Button
             variant="danger"
             size="sm"
             onClick={endInterview}
             disabled={ending || status === 'completed'}
           >
-            {ending ? 'Ending...' : 'End interview'}
+            {ending ? 'Ending…' : 'End interview'}
           </Button>
         </div>
       </header>
 
       <div className="grid flex-1 grid-cols-12 overflow-hidden">
-        <div className="col-span-5 flex flex-col border-r border-slate-800">
+        <div className="col-span-5 flex flex-col border-r border-surface-800">
           <SectionHeader>Code (read-only mirror)</SectionHeader>
           <div className="flex-1">
             <CodeEditor doc={doc} provider={provider} readOnly />
@@ -220,7 +240,7 @@ export function GodMode({
           <ExecPanel runs={execRuns} />
         </div>
 
-        <div className="col-span-4 flex flex-col border-r border-slate-800">
+        <div className="col-span-4 flex flex-col border-r border-surface-800">
           <SectionHeader>Canvas (read-only mirror)</SectionHeader>
           <div className="flex-1">
             <Canvas doc={doc} readOnly />
@@ -248,7 +268,7 @@ export function GodMode({
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-y border-slate-800 bg-slate-900/40 px-3 py-1 text-[11px] uppercase tracking-wider text-slate-400">
+    <div className="border-y border-surface-800 bg-surface-925 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-surface-400">
       {children}
     </div>
   );
@@ -261,17 +281,17 @@ function ActionLog({ entries }: { entries: LogEntry[] }) {
   }, [entries.length]);
   return (
     <div ref={ref} className="h-64 overflow-auto p-2 text-xs">
-      {entries.length === 0 && <p className="p-2 text-slate-500">Waiting for activity...</p>}
+      {entries.length === 0 && <p className="p-2 text-surface-500">Waiting for activity…</p>}
       <ul className="space-y-1">
         {entries.map((e) => (
-          <li key={e.id} className="rounded border border-slate-800 bg-slate-900/40 px-2 py-1">
-            <div className="flex items-center justify-between text-[10px] text-slate-500">
+          <li key={e.id} className="rounded-md border border-surface-800 bg-surface-900/60 px-2 py-1">
+            <div className="flex items-center justify-between text-[10px] text-surface-500">
               <span>{new Date(e.ts).toLocaleTimeString()}</span>
               <span>
                 {e.actor} · {e.kind}
               </span>
             </div>
-            <div className="text-slate-200">{e.summary}</div>
+            <div className="text-surface-100">{e.summary}</div>
           </li>
         ))}
       </ul>
@@ -283,21 +303,19 @@ function ExecPanel({ runs }: { runs: Record<string, ExecRun> }) {
   const list = Object.values(runs).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
   return (
     <div className="h-48 overflow-auto p-2 text-xs">
-      {list.length === 0 && <p className="p-2 text-slate-500">No exec runs yet.</p>}
+      {list.length === 0 && <p className="p-2 text-surface-500">No exec runs yet.</p>}
       {list.map((r) => (
-        <div key={r.id} className="mb-2 rounded border border-slate-800 bg-slate-900/40 p-2">
-          <div className="flex items-center justify-between text-[10px] text-slate-400">
-            <code className="text-slate-200">{r.command}</code>
+        <div key={r.id} className="mb-2 rounded-md border border-surface-800 bg-surface-900/60 p-2">
+          <div className="flex items-center justify-between text-[10px] text-surface-400">
+            <code className="text-surface-100">{r.command}</code>
             <span>
               {r.exitCode !== undefined
                 ? `exit ${r.exitCode} · ${r.durationMs}ms`
-                : 'running...'}
+                : 'running…'}
             </span>
           </div>
-          {r.stdout && <pre className="mt-1 whitespace-pre-wrap text-slate-200">{r.stdout}</pre>}
-          {r.stderr && (
-            <pre className="mt-1 whitespace-pre-wrap text-red-300">{r.stderr}</pre>
-          )}
+          {r.stdout && <pre className="mt-1 whitespace-pre-wrap text-surface-200">{r.stdout}</pre>}
+          {r.stderr && <pre className="mt-1 whitespace-pre-wrap text-red-300">{r.stderr}</pre>}
         </div>
       ))}
     </div>
@@ -308,16 +326,19 @@ function AiPanel({ streams }: { streams: Record<string, AiStream> }) {
   const list = Object.values(streams);
   return (
     <div className="h-56 overflow-auto p-2 text-xs">
-      {list.length === 0 && <p className="p-2 text-slate-500">No AI traffic yet.</p>}
+      {list.length === 0 && <p className="p-2 text-surface-500">No AI traffic yet.</p>}
       {list.map((s) => (
-        <div key={s.id} className="mb-2 rounded border border-slate-800 bg-slate-900/40 p-2">
+        <div
+          key={s.id}
+          className="mb-2 rounded-md border border-accent-700/40 bg-accent-500/10 p-2 shadow-[0_0_24px_-14px_rgba(47,116,255,0.6)]"
+        >
           {s.prompt && (
-            <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">
-              prompt: <span className="text-slate-200">{s.prompt}</span>
+            <div className="mb-1 text-[10px] uppercase tracking-wider text-accent-300">
+              prompt: <span className="text-surface-100">{s.prompt}</span>
             </div>
           )}
-          <pre className="whitespace-pre-wrap text-slate-100">{s.text || '...'}</pre>
-          {!s.done && <div className="mt-1 text-[10px] text-slate-500">streaming...</div>}
+          <pre className="whitespace-pre-wrap text-surface-100">{s.text || '…'}</pre>
+          {!s.done && <div className="mt-1 text-[10px] text-surface-500">streaming…</div>}
         </div>
       ))}
     </div>
@@ -352,11 +373,11 @@ function ConstraintPanel({
         </Button>
       </form>
       <ul className="space-y-1">
-        {active.length === 0 && <li className="text-slate-500">No constraints.</li>}
+        {active.length === 0 && <li className="text-surface-500">No constraints.</li>}
         {active.map((c) => (
           <li
             key={c.id}
-            className="rounded border border-amber-700/40 bg-amber-900/20 px-2 py-1 text-amber-100"
+            className="rounded-md border border-amber-700/40 bg-amber-900/20 px-2 py-1 text-amber-100"
           >
             {c.text}
           </li>
@@ -391,5 +412,5 @@ function summarize(ev: { kind: string; actor: string; payload?: Record<string, u
 }
 
 function truncate(s: string, n = 80) {
-  return s.length > n ? `${s.slice(0, n)}...` : s;
+  return s.length > n ? `${s.slice(0, n)}…` : s;
 }

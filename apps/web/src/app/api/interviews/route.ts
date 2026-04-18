@@ -19,7 +19,7 @@ const Body = z.object({
  * responsible for delivering the URL to the candidate.
  *
  * Note: the actual sandbox + Neon branch are provisioned lazily when the
- * interviewer hits "Start" from God Mode (see /api/interviews/[id]/start),
+ * interviewer hits "Start" from the interviewer console (see /api/interviews/[id]/start),
  * so we don't burn cloud resources for a scheduled-but-never-attended slot.
  */
 export async function POST(req: Request) {

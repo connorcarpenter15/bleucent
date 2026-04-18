@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 /** Fetches a fresh realtime JWT for the given interview. Used by the Yjs and
- * telemetry websocket clients in the candidate + God Mode workspaces. */
+ * telemetry websocket clients in the candidate + interviewer console workspaces. */
 export function useRealtimeToken(interviewId: string) {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

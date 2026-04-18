@@ -15,7 +15,7 @@ type ChatMessage = {
  * Streaming AI chat panel for the candidate. Posts to the orchestrator's
  * `POST /ai/stream` endpoint and renders SSE chunks. The orchestrator is
  * responsible for mirroring chunks onto the realtime telemetry channel so
- * God Mode sees them too — no extra fan-out from the browser.
+ * the interviewer console sees them too — no extra fan-out from the browser.
  */
 export function AiChatPanel({ interviewId }: { interviewId: string }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -96,34 +96,47 @@ export function AiChatPanel({ interviewId }: { interviewId: string }) {
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-b border-slate-800 px-4 py-2 text-xs uppercase tracking-wider text-slate-400">
-        AI co-pilot
-      </div>
+    <div className="flex h-full flex-col bg-surface-950">
       <div className="flex-1 space-y-3 overflow-auto p-4 text-sm">
         {messages.length === 0 && (
-          <p className="text-slate-500">
-            Ask the AI to scaffold endpoints, debug a stack trace, or explain a section of code.
-            Every prompt and response is mirrored to the interviewer in real time.
-          </p>
+          <div className="rounded-lg border border-dashed border-surface-800 bg-surface-925/60 p-4 text-surface-500">
+            <p className="text-surface-300">
+              Ask the AI to scaffold endpoints, debug a stack trace, or explain a section
+              of code.
+            </p>
+            <p className="mt-2 text-xs">
+              Every prompt and response is mirrored to the interviewer in real time.
+            </p>
+          </div>
         )}
         {messages.map((m) => (
           <div
             key={m.id}
             className={
               m.role === 'candidate'
-                ? 'rounded-md border border-slate-700 bg-slate-800/40 px-3 py-2'
-                : 'rounded-md border border-blue-700/60 bg-blue-900/20 px-3 py-2'
+                ? 'rounded-lg border border-surface-700 bg-surface-800/40 px-3 py-2'
+                : 'rounded-lg border border-accent-700/50 bg-accent-500/10 px-3 py-2 shadow-[0_0_24px_-12px_rgba(47,116,255,0.6)]'
             }
           >
-            <div className="mb-1 text-xs uppercase tracking-wider text-slate-400">
-              {m.role === 'candidate' ? 'You' : 'AI'}
+            <div className="mb-1 flex items-center gap-2 text-[10px] uppercase tracking-wider">
+              <span
+                className={
+                  m.role === 'candidate'
+                    ? 'inline-block h-1.5 w-1.5 rounded-full bg-surface-400'
+                    : 'inline-block h-1.5 w-1.5 rounded-full bg-accent-400 shadow-[0_0_6px_rgba(47,116,255,0.8)]'
+                }
+              />
+              <span className={m.role === 'candidate' ? 'text-surface-400' : 'text-accent-300'}>
+                {m.role === 'candidate' ? 'You' : 'AI'}
+              </span>
             </div>
-            <pre className="whitespace-pre-wrap font-sans text-slate-100">{m.text || '...'}</pre>
+            <pre className="whitespace-pre-wrap font-sans text-sm text-surface-100">
+              {m.text || '…'}
+            </pre>
           </div>
         ))}
       </div>
-      <div className="border-t border-slate-800 p-3">
+      <div className="border-t border-surface-800 bg-surface-925 p-3">
         <form
           className="flex gap-2"
           onSubmit={(e) => {
@@ -134,11 +147,11 @@ export function AiChatPanel({ interviewId }: { interviewId: string }) {
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask the AI..."
+            placeholder="Ask the AI…"
             disabled={streaming}
           />
           <Button type="submit" disabled={streaming || !input.trim()}>
-            {streaming ? 'Sending...' : 'Send'}
+            {streaming ? 'Sending…' : 'Send'}
           </Button>
         </form>
       </div>

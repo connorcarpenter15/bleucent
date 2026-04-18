@@ -1,8 +1,8 @@
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from './schema.js';
+import * as schema from './schema';
 
-export * as schema from './schema.js';
+export * as schema from './schema';
 export { schema as schemaTables };
 
 let cached: { client: postgres.Sql; db: PostgresJsDatabase<typeof schema> } | undefined;

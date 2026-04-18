@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Badge, Button } from '@bleucent/ui';
+import { Badge, Button, Logo } from '@bleucent/ui';
 
 type ReplayEvent = {
   ts: string;
@@ -87,36 +87,43 @@ export function ReplayClient({
 
   if (!hasKey) {
     return (
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <p className="mt-2 text-sm text-slate-400">
-          No replay log was stored for this interview. The realtime server only
-          flushes to S3 on an explicit End or after the idle GC fires.
-        </p>
+      <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-12">
+        <div className="rounded-2xl border border-surface-800 bg-surface-900/60 p-8 text-center">
+          <Logo size="md" className="justify-center" />
+          <h1 className="mt-6 font-display text-2xl font-semibold text-surface-50">{title}</h1>
+          <p className="mt-2 text-sm text-surface-400">
+            No replay log was stored for this interview. The realtime server only
+            flushes to S3 on an explicit End or after the idle GC fires.
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto flex h-screen max-w-7xl flex-col px-6 py-6">
-      <header className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold">{title}</h1>
-          <p className="text-xs text-slate-400">candidate: {candidateName}</p>
+    <div className="flex h-screen flex-col bg-surface-950 text-surface-100">
+      <header className="relative z-10 flex items-center justify-between border-b border-surface-800 bg-surface-925/90 px-4 py-2 backdrop-blur">
+        <div className="bleucent-hairline absolute inset-x-0 bottom-0 h-px opacity-40" />
+        <div className="flex items-center gap-3">
+          <Logo size="sm" />
+          <span className="hidden h-4 w-px bg-surface-700 sm:inline-block" />
+          <h1 className="text-sm font-semibold text-surface-50">{title}</h1>
+          <span className="text-xs text-surface-500">candidate: {candidateName}</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <Badge tone="info">{sorted.length} events</Badge>
           <Badge tone="neutral">{Math.round(totalMs / 1000)}s long</Badge>
+          <Badge tone="accent">Replay</Badge>
         </div>
       </header>
 
-      <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3">
+      <div className="mx-4 mt-4 flex items-center gap-3 rounded-xl border border-surface-800 bg-surface-900/60 px-4 py-3 shadow-elevated">
         <Button size="sm" onClick={() => setPlaying((p) => !p)}>
           {playing ? 'Pause' : 'Play'}
         </Button>
         <Button
           size="sm"
-          variant="secondary"
+          variant="outline"
           onClick={() => {
             setCursorMs(0);
             setPlaying(false);
@@ -133,15 +140,16 @@ export function ReplayClient({
             setCursorMs(Number(e.target.value));
             setPlaying(false);
           }}
-          className="flex-1"
+          className="flex-1 accent-accent-500"
+          style={{ accentColor: 'var(--bleucent-accent)' }}
         />
-        <span className="w-20 text-right text-xs text-slate-400 tabular-nums">
+        <span className="w-24 text-right text-xs text-surface-400 tabular-nums">
           {formatMs(cursorMs)} / {formatMs(totalMs)}
         </span>
         <select
           value={speed}
           onChange={(e) => setSpeed(Number(e.target.value) as (typeof SPEEDS)[number])}
-          className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 text-xs"
+          className="rounded-md border border-surface-700 bg-surface-900 px-2 py-1 text-xs text-surface-100 focus-visible:border-accent-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
         >
           {SPEEDS.map((s) => (
             <option key={s} value={s}>
@@ -151,41 +159,55 @@ export function ReplayClient({
         </select>
       </div>
 
-      <div className="mt-4 grid flex-1 grid-cols-12 gap-4 overflow-hidden">
-        <div className="col-span-3 rounded-lg border border-slate-800 bg-slate-900/40 p-4 text-sm">
-          <h2 className="text-xs uppercase tracking-wider text-slate-400">Cumulative</h2>
-          <ul className="mt-2 space-y-1 text-slate-200">
-            <li>code edits: {codeBytes} bytes</li>
-            <li>canvas ops: {canvasOps}</li>
-            <li>AI prompts: {aiPrompts}</li>
-            <li>exec runs: {execRuns}</li>
+      <div className="m-4 grid flex-1 grid-cols-12 gap-4 overflow-hidden">
+        <div className="col-span-3 rounded-xl border border-surface-800 bg-surface-900/60 p-4 text-sm">
+          <h2 className="text-[11px] font-medium uppercase tracking-wider text-surface-400">
+            Cumulative
+          </h2>
+          <ul className="mt-3 space-y-2 text-surface-200">
+            <Stat label="Code edits" value={`${codeBytes} bytes`} />
+            <Stat label="Canvas ops" value={canvasOps} />
+            <Stat label="AI prompts" value={aiPrompts} />
+            <Stat label="Exec runs" value={execRuns} />
           </ul>
         </div>
-        <div className="col-span-9 overflow-auto rounded-lg border border-slate-800 bg-slate-900/40 p-2 text-xs">
+        <div className="col-span-9 overflow-auto rounded-xl border border-surface-800 bg-surface-900/40 p-2 text-xs">
           {visible.length === 0 && (
-            <p className="p-4 text-slate-500">Press play to start replaying.</p>
+            <p className="p-4 text-surface-500">Press play to start replaying.</p>
           )}
           <ul className="space-y-1">
-            {visible.slice(-200).reverse().map((e) => (
-              <li
-                key={`${e.ts}_${e.seq}`}
-                className="rounded border border-slate-800 bg-slate-950/50 px-2 py-1"
-              >
-                <div className="flex items-center justify-between text-[10px] text-slate-500">
-                  <span>{new Date(e.ts).toLocaleTimeString()}</span>
-                  <span>
-                    {e.actor} · {e.kind}
-                  </span>
-                </div>
-                <pre className="whitespace-pre-wrap text-slate-200">
-                  {JSON.stringify(e.payload)}
-                </pre>
-              </li>
-            ))}
+            {visible
+              .slice(-200)
+              .reverse()
+              .map((e) => (
+                <li
+                  key={`${e.ts}_${e.seq}`}
+                  className="rounded-md border border-surface-800 bg-surface-950/60 px-2 py-1"
+                >
+                  <div className="flex items-center justify-between text-[10px] text-surface-500">
+                    <span>{new Date(e.ts).toLocaleTimeString()}</span>
+                    <span>
+                      {e.actor} · {e.kind}
+                    </span>
+                  </div>
+                  <pre className="whitespace-pre-wrap text-surface-200">
+                    {JSON.stringify(e.payload)}
+                  </pre>
+                </li>
+              ))}
           </ul>
         </div>
       </div>
-    </main>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <li className="flex items-center justify-between">
+      <span className="text-surface-400">{label}</span>
+      <span className="font-medium text-surface-100">{value}</span>
+    </li>
   );
 }
 
