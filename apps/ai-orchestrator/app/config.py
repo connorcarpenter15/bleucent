@@ -38,9 +38,6 @@ class Settings(BaseSettings):
     bind_host: str = "0.0.0.0"
     bind_port: int = 5000
 
-    class Config:
-        env_prefix = ""
-
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

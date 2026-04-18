@@ -21,6 +21,8 @@
     "build": "tsc -p tsconfig.json && node ./scripts/emit-json-schema.mjs",
     "dev": "tsc -p tsconfig.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rm -rf dist schemas"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "zod-to-json-schema": "^3.24.1"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }

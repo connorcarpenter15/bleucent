@@ -4,17 +4,15 @@ A synchronous multi-tenant interview platform. This file is for AI agents and hu
 
 ## Architecture at a glance
 
-| Service                       | Path                        | Stack                          | Hosting (prod) |
-| ----------------------------- | --------------------------- | ------------------------------ | -------------- |
-| Web (candidate IDE + interviewer console) | `apps/web`                  | Next.js 15 + Better Auth       | Vercel         |
-| Realtime server               | `apps/realtime-server`      | Rust + Axum + yrs              | Railway        |
-| AI orchestrator               | `apps/ai-orchestrator`      | Python 3.12 + FastAPI + LiteLLM | Railway        |
-| Sandbox provisioner           | `apps/sandbox-provisioner`  | Python 3.12 + FastAPI + Docker | Railway (P1) / AWS .metal (P2) |
-| Shared protocol               | `packages/shared-protocol`  | TS + JSON Schema               | n/a            |
-| Database schema               | `packages/db`               | Drizzle ORM + Neon Postgres    | Neon           |
-| Shared UI                     | `packages/ui`               | React + Tailwind preset        | n/a            |
-
-See [`/Users/cmaccarp/.cursor/plans/bleucent_build_spec_5a276e63.plan.md`](.cursor/plans/bleucent_build_spec_5a276e63.plan.md) for the full spec.
+| Service                                   | Path                       | Stack                           | Hosting (prod)                 |
+| ----------------------------------------- | -------------------------- | ------------------------------- | ------------------------------ |
+| Web (candidate IDE + interviewer console) | `apps/web`                 | Next.js 15 + Better Auth        | Vercel                         |
+| Realtime server                           | `apps/realtime-server`     | Rust + Axum + yrs               | Railway                        |
+| AI orchestrator                           | `apps/ai-orchestrator`     | Python 3.12 + FastAPI + LiteLLM | Railway                        |
+| Sandbox provisioner                       | `apps/sandbox-provisioner` | Python 3.12 + FastAPI + Docker  | Railway (P1) / AWS .metal (P2) |
+| Shared protocol                           | `packages/shared-protocol` | TS + JSON Schema                | n/a                            |
+| Database schema                           | `packages/db`              | Drizzle ORM + Neon Postgres     | Neon                           |
+| Shared UI                                 | `packages/ui`              | React + Tailwind preset         | n/a                            |
 
 ## Tooling
 
