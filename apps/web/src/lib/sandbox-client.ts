@@ -1,4 +1,4 @@
-import { env } from './env.js';
+import { env } from './env';
 
 /** Thin client for the Python sandbox provisioner service. */
 

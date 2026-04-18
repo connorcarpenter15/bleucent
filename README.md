@@ -1,6 +1,8 @@
 # Bleucent
 
-A synchronous, multi-tenant interview platform: a candidate IDE/canvas, a real-time God Mode dashboard for interviewers, an AI co-pilot, and an isolated code execution sandbox.
+A synchronous, multi-tenant interview platform: a candidate IDE/canvas, a
+real-time console for interviewers, an AI co-pilot, and an isolated
+code execution sandbox.
 
 See [`AGENTS.md`](./AGENTS.md) for the architecture overview and developer quickstart.
 
@@ -14,13 +16,13 @@ pnpm --filter @bleucent/db migrate
 pnpm dev
 ```
 
-Open http://localhost:3000.
+Open [http://localhost:3000].
 
 ## Repository layout
 
-```
+```{shell}
 apps/
-  web/                    Next.js 15 (App Router) — candidate IDE + God Mode + auth
+  web/                    Next.js 15 (App Router) — candidate IDE + interviewer console + auth
   realtime-server/        Rust + Axum + yrs — Yjs sync + telemetry channel
   ai-orchestrator/        Python + FastAPI + LiteLLM — AI co-pilot SSE
   sandbox-provisioner/    Python + FastAPI + Docker — ephemeral exec environments

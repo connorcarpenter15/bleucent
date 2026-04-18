@@ -126,7 +126,7 @@ pub struct InternalBroadcastBody {
 }
 
 /// `POST /internal/broadcast/{interview_id}` — used by the AI orchestrator to
-/// mirror streamed AI response chunks onto the telemetry channel so God Mode
+/// mirror streamed AI response chunks onto the telemetry channel so the interviewer console
 /// sees them in the same action log as the candidate.
 pub async fn internal_broadcast(
     Path(interview_id): Path<Uuid>,

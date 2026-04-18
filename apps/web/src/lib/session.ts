@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { auth } from './auth.js';
+import { auth } from './auth';
 
 /** Returns the current Better Auth session for a server component / route handler. */
 export async function getSession() {

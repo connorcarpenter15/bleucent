@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { eq } from 'drizzle-orm';
+import { Logo } from '@bleucent/ui';
 import { schema } from '@bleucent/db';
 import { db } from '@/lib/db';
 import { CandidateWorkspace } from './workspace-client';
@@ -18,11 +19,16 @@ export default async function CandidateWorkspacePage({
   const cookie = (await cookies()).get(`bleucent_candidate_${id}`);
   if (!cookie?.value) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
-        <h1 className="text-2xl font-semibold">Join link required.</h1>
-        <p className="mt-2 text-sm text-slate-400">
-          Use the candidate join link your interviewer shared with you.
-        </p>
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 text-center">
+        <div className="rounded-2xl border border-surface-800 bg-surface-900/60 p-8">
+          <Logo size="md" className="justify-center" />
+          <h1 className="mt-6 font-display text-2xl font-semibold text-surface-50">
+            Join link required.
+          </h1>
+          <p className="mt-2 text-sm text-surface-400">
+            Use the candidate join link your interviewer shared with you.
+          </p>
+        </div>
       </main>
     );
   }
@@ -31,9 +37,14 @@ export default async function CandidateWorkspacePage({
   if (!iv) redirect('/');
   if (iv.status === 'completed' || iv.status === 'expired') {
     return (
-      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 text-center">
-        <h1 className="text-2xl font-semibold">This interview has ended.</h1>
-        <p className="mt-2 text-sm text-slate-400">Thanks for participating.</p>
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 text-center">
+        <div className="rounded-2xl border border-surface-800 bg-surface-900/60 p-8">
+          <Logo size="md" className="justify-center" />
+          <h1 className="mt-6 font-display text-2xl font-semibold text-surface-50">
+            This interview has ended.
+          </h1>
+          <p className="mt-2 text-sm text-surface-400">Thanks for participating.</p>
+        </div>
       </main>
     );
   }

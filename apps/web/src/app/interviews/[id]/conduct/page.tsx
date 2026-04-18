@@ -3,11 +3,11 @@ import { eq } from 'drizzle-orm';
 import { schema } from '@bleucent/db';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
-import { GodMode } from './god-mode-client';
+import { InterviewerConsole } from './console-client';
 
 export const dynamic = 'force-dynamic';
 
-/** Interviewer-only "God Mode" view. Live-mirrors the candidate's editor and
+/** Interviewer console. Live-mirrors the candidate's editor and
  * canvas, surfaces telemetry as an action log, accepts new AI constraints,
  * shows exec output, and exposes the canonical End Interview button. */
 export default async function ConductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -27,7 +27,7 @@ export default async function ConductPage({ params }: { params: Promise<{ id: st
     .where(eq(schema.interviewerConstraint.interviewId, id));
 
   return (
-    <GodMode
+    <InterviewerConsole
       interviewId={id}
       title={iv.title}
       candidateName={iv.candidateName}

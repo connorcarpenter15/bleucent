@@ -5,7 +5,7 @@ Endpoints:
 - `POST /ai/stream` — SSE-streamed LLM response. Pulls live snapshot +
   constraints + RAG, calls LiteLLM with `stream=True`, yields chunks to the
   candidate, and mirrors each chunk to the realtime telemetry channel so
-  God Mode sees them in real time.
+  the interviewer console sees them in real time.
 """
 
 from __future__ import annotations
@@ -132,7 +132,7 @@ async def ai_stream(req: StreamRequest):
                     "data": _json({"chunk": delta}),
                 }
         finally:
-            # Signal completion to both candidate and God Mode.
+            # Signal completion to both candidate and the interviewer console.
             asyncio.create_task(
                 broadcast_chunk(
                     req.interview_id,
