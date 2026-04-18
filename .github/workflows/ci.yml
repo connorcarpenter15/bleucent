@@ -1,0 +1,161 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: '10.22.0'
+  NODE_VERSION: '20'
+  RUST_TOOLCHAIN: 'stable'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ------------------------------------------------------------------
+  # JavaScript / TypeScript: lint + typecheck + Vitest for web, ui, db,
+  # shared-protocol. Builds workspace dependencies first so apps that
+  # import from `dist/` resolve correctly.
+  # ------------------------------------------------------------------
+  js:
+    name: JS / TS (lint, typecheck, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build workspace packages
+        run: pnpm --filter '@bleucent/shared-protocol' --filter '@bleucent/db' build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Test (Vitest)
+        run: |
+          pnpm --filter '@bleucent/shared-protocol' test
+          pnpm --filter '@bleucent/db' test
+          pnpm --filter '@bleucent/ui' test
+          pnpm --filter '@bleucent/web' test
+
+      - name: Build apps/web
+        env:
+          # Build needs valid env shape — values are not used at build time.
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          BETTER_AUTH_SECRET: ci-better-auth-secret-very-long-x
+          BETTER_AUTH_URL: http://localhost:3000
+          REALTIME_SERVER_URL: http://localhost:4000
+          REALTIME_INTERNAL_TOKEN: ci-internal-token
+          REALTIME_JWT_SECRET: ci-realtime-jwt-secret-very-long
+          AI_ORCHESTRATOR_URL: http://localhost:5000
+          SANDBOX_PROVISIONER_URL: http://localhost:6000
+          NEXT_PUBLIC_REALTIME_WS_URL: ws://localhost:4000
+        run: pnpm --filter '@bleucent/web' build
+
+  # ------------------------------------------------------------------
+  # Rust realtime server: fmt + clippy + cargo test. Restored cache
+  # avoids re-compiling the dependency tree on every PR.
+  # ------------------------------------------------------------------
+  rust:
+    name: Rust (fmt, clippy, test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/realtime-server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt,clippy
+
+      - name: Cache cargo registry + target
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/realtime-server -> target
+
+      - name: Format check
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --bin bleucent-realtime --all-features -- -D warnings
+
+      - name: Test
+        run: cargo test --bin bleucent-realtime --no-fail-fast
+
+  # ------------------------------------------------------------------
+  # Python services: install dev extras, run ruff, run pytest.
+  # Each service is independently installable + testable.
+  # ------------------------------------------------------------------
+  python:
+    name: Python (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - ai-orchestrator
+          - sandbox-provisioner
+    defaults:
+      run:
+        working-directory: apps/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies (with [dev] extras)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Test (pytest)
+        run: pytest -q
+
+  # ------------------------------------------------------------------
+  # Summary gate. Branch protection should require this single check.
+  # ------------------------------------------------------------------
+  ci-pass:
+    name: CI passed
+    if: always()
+    needs: [js, rust, python]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aggregate result
+        run: |
+          if [ "${{ needs.js.result }}" != "success" ] \
+            || [ "${{ needs.rust.result }}" != "success" ] \
+            || [ "${{ needs.python.result }}" != "success" ]; then
+            echo "One or more jobs failed."
+            exit 1
+          fi
+          echo "All checks passed."
