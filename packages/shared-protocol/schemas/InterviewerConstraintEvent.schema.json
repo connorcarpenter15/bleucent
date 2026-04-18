@@ -1,0 +1,57 @@
+{
+  "$ref": "#/definitions/InterviewerConstraintEvent",
+  "definitions": {
+    "InterviewerConstraintEvent": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "interviewer_constraint"
+        },
+        "interviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "interviewer",
+            "system",
+            "ai"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "constraintId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "constraintId",
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "interviewId",
+        "ts",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

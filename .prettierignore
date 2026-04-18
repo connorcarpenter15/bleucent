@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+target
+.turbo
+pnpm-lock.yaml
+*.lock
+apps/realtime-server
+apps/ai-orchestrator/.venv
+apps/sandbox-provisioner/.venv

@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  @apply bg-slate-950 text-slate-100;
+  min-height: 100vh;
+}
+
+body {
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+a {
+  @apply text-blue-400 hover:text-blue-300;
+}
+
+/* Monaco editor / React Flow play nicely with dark backgrounds */
+.react-flow__pane,
+.react-flow__renderer {
+  @apply bg-slate-950;
+}

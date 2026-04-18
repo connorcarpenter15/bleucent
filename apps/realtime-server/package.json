@@ -1,0 +1,12 @@
+{
+  "name": "@bleucent/realtime-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cargo run",
+    "build": "cargo build --release",
+    "lint": "cargo clippy --all-targets -- -D warnings",
+    "typecheck": "cargo check",
+    "test": "cargo test"
+  }
+}

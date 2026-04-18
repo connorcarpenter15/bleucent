@@ -1,0 +1,33 @@
+{
+  "$ref": "#/definitions/CandidateJoinResponse",
+  "definitions": {
+    "CandidateJoinResponse": {
+      "type": "object",
+      "properties": {
+        "interviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "realtimeToken": {
+          "type": "string"
+        },
+        "realtimeWsUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "aiOrchestratorUrl": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "interviewId",
+        "realtimeToken",
+        "realtimeWsUrl",
+        "aiOrchestratorUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

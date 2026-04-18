@@ -1,0 +1,70 @@
+{
+  "$ref": "#/definitions/ExecEndEvent",
+  "definitions": {
+    "ExecEndEvent": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "exec_end"
+        },
+        "interviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "interviewer",
+            "system",
+            "ai"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "execId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "exitCode": {
+              "type": "integer"
+            },
+            "durationMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stdoutTail": {
+              "type": "string"
+            },
+            "stderrTail": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "execId",
+            "exitCode",
+            "durationMs",
+            "stdoutTail",
+            "stderrTail"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "interviewId",
+        "ts",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,403 @@
+{
+  "$ref": "#/definitions/TelemetryEvent",
+  "definitions": {
+    "TelemetryEvent": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "code_edit"
+            },
+            "interviewId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "ts": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "actor": {
+              "type": "string",
+              "enum": [
+                "candidate",
+                "interviewer",
+                "system",
+                "ai"
+              ]
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "bytesChanged": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "path",
+                "bytesChanged"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "canvas_edit"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "nodesAdded": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "nodesRemoved": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "edgesAdded": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "edgesRemoved": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ai_prompt"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "promptId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "prompt": {
+                  "type": "string"
+                },
+                "currentFile": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "promptId",
+                "prompt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ai_response_chunk"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "promptId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "chunk": {
+                  "type": "string"
+                },
+                "done": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "promptId",
+                "chunk",
+                "done"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "exec_start"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "execId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "command": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "execId",
+                "command"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "exec_end"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "execId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "exitCode": {
+                  "type": "integer"
+                },
+                "durationMs": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "stdoutTail": {
+                  "type": "string"
+                },
+                "stderrTail": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "execId",
+                "exitCode",
+                "durationMs",
+                "stdoutTail",
+                "stderrTail"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "interviewer_constraint"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "constraintId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "constraintId",
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "presence"
+            },
+            "interviewId": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/interviewId"
+            },
+            "ts": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/ts"
+            },
+            "actor": {
+              "$ref": "#/definitions/TelemetryEvent/anyOf/0/properties/actor"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "clientId": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "candidate",
+                    "interviewer"
+                  ]
+                },
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "joined",
+                    "left",
+                    "heartbeat"
+                  ]
+                }
+              },
+              "required": [
+                "clientId",
+                "role",
+                "state"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "kind",
+            "interviewId",
+            "ts",
+            "actor",
+            "payload"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

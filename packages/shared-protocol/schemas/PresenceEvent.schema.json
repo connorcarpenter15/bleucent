@@ -1,0 +1,69 @@
+{
+  "$ref": "#/definitions/PresenceEvent",
+  "definitions": {
+    "PresenceEvent": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "presence"
+        },
+        "interviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "interviewer",
+            "system",
+            "ai"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "candidate",
+                "interviewer"
+              ]
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "joined",
+                "left",
+                "heartbeat"
+              ]
+            }
+          },
+          "required": [
+            "clientId",
+            "role",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "interviewId",
+        "ts",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
