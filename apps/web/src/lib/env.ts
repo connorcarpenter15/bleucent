@@ -53,7 +53,7 @@ export function env(): Env {
       REALTIME_SERVER_URL: process.env.REALTIME_SERVER_URL ?? 'http://localhost:4000',
       REALTIME_INTERNAL_TOKEN: process.env.REALTIME_INTERNAL_TOKEN ?? 'dev-internal-token',
       REALTIME_JWT_SECRET: process.env.REALTIME_JWT_SECRET ?? 'dev-jwt-secret-change-me-please!',
-      AI_ORCHESTRATOR_URL: process.env.AI_ORCHESTRATOR_URL ?? 'http://localhost:5000',
+      AI_ORCHESTRATOR_URL: process.env.AI_ORCHESTRATOR_URL ?? 'http://localhost:5050',
       SANDBOX_PROVISIONER_URL: process.env.SANDBOX_PROVISIONER_URL ?? 'http://localhost:6000',
       NEXT_PUBLIC_REALTIME_WS_URL: process.env.NEXT_PUBLIC_REALTIME_WS_URL ?? 'ws://localhost:4000',
       S3_ENDPOINT: process.env.S3_ENDPOINT,

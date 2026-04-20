@@ -15,7 +15,13 @@ FastAPI + LiteLLM service that:
 cd apps/ai-orchestrator
 python -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'
-uvicorn app.main:app --reload --port 5000
+uvicorn app.main:app --reload --port 5050
 ```
 
 The service expects the standard root `.env` to be loaded (see `.env.example`).
+
+> Why port 5050 and not 5000? macOS's AirPlay Receiver binds `*:5000` by
+> default (System Settings → General → AirDrop & Handoff). Picking 5050
+> avoids the collision without requiring every contributor to disable an
+> OS setting. Railway still exposes the service on whatever `$PORT` it
+> chooses in production.

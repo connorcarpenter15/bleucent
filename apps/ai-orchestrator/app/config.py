@@ -45,7 +45,10 @@ class Settings(BaseSettings):
     rag_top_k: int = 4
 
     bind_host: str = "0.0.0.0"
-    bind_port: int = 5000
+    # 5050 (not 5000) because macOS's AirPlay Receiver (ControlCenter) listens
+    # on :5000 by default since macOS 12, which blocks `pnpm dev` out of the
+    # box. Railway overrides this at runtime via $PORT.
+    bind_port: int = 5050
 
 
 @lru_cache(maxsize=1)

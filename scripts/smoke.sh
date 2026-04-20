@@ -13,7 +13,7 @@ set -euo pipefail
 
 WEB="${1:-http://localhost:3000}"
 RT="${2:-http://localhost:4000}"
-AI="${3:-http://localhost:5000}"
+AI="${3:-http://localhost:5050}"
 
 red() { printf '\033[31m%s\033[0m\n' "$*"; }
 green() { printf '\033[32m%s\033[0m\n' "$*"; }
