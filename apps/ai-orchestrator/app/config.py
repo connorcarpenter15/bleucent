@@ -10,7 +10,6 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 # Walk up from this file to find candidate `.env` locations. Locally the repo
 # root is parents[3] (apps/ai-orchestrator/app/config.py -> repo root); in the
 # Railway container the app is copied to /app/app/config.py, where deeper
