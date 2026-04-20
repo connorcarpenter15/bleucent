@@ -11,11 +11,27 @@ FastAPI + LiteLLM service that:
 
 ## Local dev
 
+From the repo root:
+
+```bash
+pnpm --filter @leucent/ai-orchestrator dev
+```
+
+The `predev` hook (`scripts/bootstrap-python-venv.sh`) creates
+`apps/ai-orchestrator/.venv` on first run and installs this package with its
+`[dev]` extras, so the dev server picks up project-local deps instead of
+whatever `uvicorn` happens to be on your system `$PATH` (homebrew, anaconda,
+pyenv, ...). Subsequent runs skip the bootstrap and start immediately. If you
+rename or move the repo directory, the bootstrap detects the resulting stale
+shebangs and rebuilds the venv.
+
+If you prefer the manual flow:
+
 ```bash
 cd apps/ai-orchestrator
-python -m venv .venv && source .venv/bin/activate
+python3.11 -m venv .venv && source .venv/bin/activate
 pip install -e '.[dev]'
-uvicorn app.main:app --reload --port 5050
+python -m uvicorn app.main:app --reload --port 5050
 ```
 
 The service expects the standard root `.env` to be loaded (see `.env.example`).
