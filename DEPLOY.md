@@ -311,29 +311,96 @@ returns 2xx you're shipped.
 
 ---
 
-## 6. Hooking up CI to deploy automatically
+## 6. Hooking up CI to gate production deploys
 
-The `.github/workflows/ci.yml` job in this repo runs lint, typecheck, and
-all four test suites on every push and PR. It does **not** deploy by
-itself — both Vercel and Railway watch the `main` branch directly:
+The `.github/workflows/ci.yml` job in this repo runs lint, typecheck,
+format check, and all four test suites on every push and PR. Vercel's
+**Git integration stays enabled** — it creates production builds on
+every push to `main` as normal — but we wire the CI result into
+Vercel's **Deployment Checks** so a build is never aliased to the
+production domain while CI is red.
 
-- **Vercel**: every push to `main` triggers a production build.
-  Every push to a non-main branch creates a Preview deployment that
-  CI links from the PR's checks list.
-- **Railway**: same model. Each service's `railway.json` `watchPatterns`
-  filter ensures e.g. a docs-only commit doesn't redeploy the Rust
-  realtime server.
+### 6a. How Deployment Checks gate production
 
-Recommended branch protection on `main`:
+Vercel separates "build" from "release". A production build on `main`
+is always created, but it isn't aliased to `leucent.app` until every
+required check has reported `success` against the triggering commit.
+If a check reports `failure` (or times out), the build simply sits
+there and the previous production deployment keeps serving traffic.
+
+We rely on the single `CI passed` job in `.github/workflows/ci.yml`
+(which itself depends on `js`, `rust`, and `python`) as the required
+check. If any of those fail, `CI passed` fails, and Vercel withholds
+promotion.
+
+### 6b. Configure Deployment Checks in the Vercel dashboard
+
+One-time setup for the `web` Vercel project:
+
+1. Confirm the project is connected to GitHub:
+   **Settings → Git** should show the repo. If not, connect it first.
+2. Enable automatic production aliasing:
+   **Settings → Environments → Production → Automatic Aliasing**
+   must be **On**. (Without this, "promotion" is already manual and
+   checks are moot.)
+3. Open **Settings → Build and Deployment → Deployment Checks**
+   (also reachable via the dashboard path `project → Settings → Deployment Checks`).
+4. Click **Add Checks** → provider **GitHub**.
+5. In the check picker, search for `CI passed` and select it. That
+   is the aggregate job from `.github/workflows/ci.yml`. Save.
+
+Vercel will now read the commit status for that check run on each
+production deployment's commit SHA and hold the alias flip until it
+reports `success`.
+
+### 6c. What runs when
+
+- **Every PR**: CI runs all suites → GitHub check runs show pass/fail on
+  the PR. Vercel creates a preview deployment automatically (via the
+  Git integration); preview deployments are never gated by Deployment
+  Checks — they're always accessible for review.
+- **Every push to `main`**: CI runs → GitHub publishes the `CI passed`
+  check run against the merge commit. Vercel creates a production
+  build in parallel. Once the build is ready **and** `CI passed` is
+  green, Vercel aliases it to the production domain. If `CI passed`
+  fails, the build stays unpromoted and the prior production deploy
+  keeps serving.
+- **Railway**: still watches `main` independently. Deployment Checks
+  are a Vercel feature — Railway services will redeploy on merge
+  regardless of GitHub check status. If you need the same gate on
+  Railway, add a manual-approval step in each Railway service's
+  settings, or switch those services to CLI-driven deploys.
+
+### 6d. Naming stability matters
+
+Vercel identifies a check by the workflow + job name. Do not rename
+the `ci-pass` job (`name: CI passed`) in `.github/workflows/ci.yml`
+without also updating the selection in
+**Settings → Deployment Checks**. A rename without a re-selection
+silently drops the gate — Vercel looks for a check run that no longer
+exists and, after the configured timeout, lets the deployment through.
+
+### 6e. Recommended branch protection on `main`
+
+Deployment Checks stop bad code from **reaching production**, but they
+don't stop bad code from **landing on `main`**. Pair them with branch
+protection:
 
 1. **Settings → Branches → Add rule** → branch name pattern `main`.
 2. Require PRs before merging.
-3. Require the **`CI passed`** check (the aggregate gate from
-   `.github/workflows/ci.yml`).
-4. Require linear history if you want squash-only merges.
+3. Require the **`CI passed`** check to succeed.
+4. Require linear history for squash-only merges (optional).
 
-That's it — once green, Vercel + Railway will pick up the merged commit and
-roll out automatically.
+With both in place: a PR can't merge with a red CI, and even if
+something slips in via a direct push (or a check that changes status
+post-merge), the resulting production build won't be aliased.
+
+### 6f. Bypassing the gate (break-glass)
+
+To force-promote a build while CI is red (e.g. CI infra is broken and
+you need a hotfix out), use **Force Promote** from the deployment's
+detail page in the Vercel dashboard. This is audit-logged and should
+be the exception.
 
 ---
 

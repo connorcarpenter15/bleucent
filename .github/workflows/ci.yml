@@ -142,7 +142,10 @@ jobs:
         run: pytest -q
 
   # ------------------------------------------------------------------
-  # Summary gate. Branch protection should require this single check.
+  # Summary gate. This is the check Vercel Deployment Checks watches,
+  # and what branch protection should require. Its name must stay
+  # stable (`CI passed`) — it's referenced by name in Vercel project
+  # settings. Renaming it requires re-selecting it there.
   # ------------------------------------------------------------------
   ci-pass:
     name: CI passed
