@@ -106,9 +106,7 @@ async function main() {
     // `0000_misty_silver_surfer.sql` file no longer confuses migrate(). The
     // `__drizzle_migrations` table itself stays — migrate() will repopulate
     // it with the new file's hash.
-    await client.unsafe(
-      `DELETE FROM drizzle.__drizzle_migrations WHERE true`,
-    );
+    await client.unsafe(`DELETE FROM drizzle.__drizzle_migrations WHERE true`);
     console.log('  cleared drizzle.__drizzle_migrations');
 
     console.log('Done. Run `pnpm --filter @leucent/db migrate` next.');

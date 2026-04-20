@@ -35,9 +35,7 @@ async function main() {
     if (args.has('--fks')) {
       // info_schema.constraint_column_usage hides cross-schema FKs on some
       // PG versions, so we query pg_constraint directly.
-      const fks = await client<
-        { table: string; column: string; references: string }[]
-      >`
+      const fks = await client<{ table: string; column: string; references: string }[]>`
         SELECT
           cn.nspname || '.' || cl.relname AS "table",
           att.attname                      AS "column",

@@ -75,12 +75,8 @@
           "name": "ai_context_chunk_interview_id_interview_id_fk",
           "tableFrom": "ai_context_chunk",
           "tableTo": "interview",
-          "columnsFrom": [
-            "interview_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interview_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -245,12 +241,8 @@
           "tableFrom": "interview",
           "tableTo": "organization",
           "schemaTo": "neon_auth",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -259,12 +251,8 @@
           "tableFrom": "interview",
           "tableTo": "user",
           "schemaTo": "neon_auth",
-          "columnsFrom": [
-            "interviewer_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interviewer_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -368,12 +356,8 @@
           "name": "interview_event_interview_id_interview_id_fk",
           "tableFrom": "interview_event",
           "tableTo": "interview",
-          "columnsFrom": [
-            "interview_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interview_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -449,12 +433,8 @@
           "name": "interview_invite_interview_id_interview_id_fk",
           "tableFrom": "interview_invite",
           "tableTo": "interview",
-          "columnsFrom": [
-            "interview_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interview_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -464,9 +444,7 @@
         "interview_invite_token_hash_unique": {
           "name": "interview_invite_token_hash_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token_hash"
-          ]
+          "columns": ["token_hash"]
         }
       },
       "policies": {},
@@ -538,12 +516,8 @@
           "name": "interviewer_constraint_interview_id_interview_id_fk",
           "tableFrom": "interviewer_constraint",
           "tableTo": "interview",
-          "columnsFrom": [
-            "interview_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["interview_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -552,12 +526,8 @@
           "tableFrom": "interviewer_constraint",
           "tableTo": "user",
           "schemaTo": "neon_auth",
-          "columnsFrom": [
-            "created_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -611,12 +581,7 @@
     "public.interview_status": {
       "name": "interview_status",
       "schema": "public",
-      "values": [
-        "scheduled",
-        "live",
-        "completed",
-        "expired"
-      ]
+      "values": ["scheduled", "live", "completed", "expired"]
     }
   },
   "schemas": {},

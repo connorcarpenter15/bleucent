@@ -66,24 +66,28 @@ but the CLI is far faster for the env-var dance below.
 7. **Run the leucent migrations AFTER Auth is enabled**, not before — the
    FKs in leucent's migration reference `public.user(id)` and
    `public.organization(id)`, which must already exist:
+
    ```bash
    set -a && . ./.env.production && set +a
    pnpm --filter @leucent/db migrate
    ```
+
    (after this is automated in CI you'll never run it by hand again.)
 
    **Recovering from a half-applied pre-Neon-Auth migration.** If you were
    on Better Auth before the Neon Auth migration and `pnpm --filter
-   @leucent/db migrate` fails with errors like `type "interview_status"
-   already exists`, the old `0000_misty_silver_surfer.sql` has already run
+@leucent/db migrate` fails with errors like `type "interview_status"
+already exists`, the old `0000_misty_silver_surfer.sql` has already run
    on this branch. Reset leucent's objects AND drop the legacy Better Auth
    `public.user` / `public.session` / etc. tables (Neon Auth uses the
    `neon_auth` schema instead, so the `public` copies are orphans):
+
    ```bash
    set -a && . ./.env.production && set +a
    pnpm --filter @leucent/db reset:leucent -- --confirm --drop-auth-orphans
    pnpm --filter @leucent/db migrate
    ```
+
    Omit `--drop-auth-orphans` if you only want the leucent-tables reset and
    you've already cleaned up the legacy `public` auth tables by hand.
 
@@ -117,7 +121,7 @@ node -e "console.log('REALTIME_INTERNAL_TOKEN=' + require('crypto').randomBytes(
 node -e "console.log('NEON_AUTH_COOKIE_SECRET=' + require('crypto').randomBytes(32).toString('base64url'))"
 ```
 
-(`NEON_AUTH_COOKIE_SECRET` is *leucent*'s cookie-signing secret for the
+(`NEON_AUTH_COOKIE_SECRET` is _leucent_'s cookie-signing secret for the
 Neon Auth browser client — it is NOT the Neon Auth server secret, which
 Neon manages for you.)
 

@@ -67,9 +67,7 @@ export function env(): Env {
       // source access. Prior versions only logged this to stderr, which
       // turned into opaque 500s in practice.
       console.error('Invalid environment configuration:', fieldErrors);
-      throw new Error(
-        `Invalid environment configuration: ${JSON.stringify(fieldErrors)}`,
-      );
+      throw new Error(`Invalid environment configuration: ${JSON.stringify(fieldErrors)}`);
     }
     console.warn(
       '[env] Some required env vars are missing. Falling back to dev defaults where possible.',
@@ -77,8 +75,7 @@ export function env(): Env {
     );
     cached = {
       DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://leucent:leucent@localhost:5432/leucent',
-      NEON_AUTH_BASE_URL:
-        process.env.NEON_AUTH_BASE_URL ?? 'http://localhost:9999/dev-neon-auth',
+      NEON_AUTH_BASE_URL: process.env.NEON_AUTH_BASE_URL ?? 'http://localhost:9999/dev-neon-auth',
       NEON_AUTH_COOKIE_SECRET:
         process.env.NEON_AUTH_COOKIE_SECRET ?? 'dev-neon-auth-cookie-secret-32-bytes-long-ok',
       REALTIME_SERVER_URL: process.env.REALTIME_SERVER_URL,
