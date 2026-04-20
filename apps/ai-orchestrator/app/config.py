@@ -11,12 +11,22 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+# Walk up from this file to find candidate `.env` locations. Locally the repo
+# root is parents[3] (apps/ai-orchestrator/app/config.py -> repo root); in the
+# Railway container the app is copied to /app/app/config.py, where deeper
+# parents don't exist. Indexing past the filesystem root raises IndexError
+# at import time, so we collect only the parents that actually resolve.
+_CONFIG_PARENTS = Path(__file__).resolve().parents
+_ENV_FILES = tuple(
+    _CONFIG_PARENTS[depth] / ".env"
+    for depth in (3, 2)
+    if depth < len(_CONFIG_PARENTS)
+)
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=[
-            Path(__file__).resolve().parents[3] / ".env",
-            Path(__file__).resolve().parents[2] / ".env",
-        ],
+        env_file=_ENV_FILES,
         env_file_encoding="utf-8",
         extra="ignore",
     )
