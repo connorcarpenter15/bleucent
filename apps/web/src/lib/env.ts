@@ -40,7 +40,7 @@ export function env(): Env {
     );
     cached = {
       DATABASE_URL:
-        process.env.DATABASE_URL ?? 'postgres://bleucent:bleucent@localhost:5432/bleucent',
+        process.env.DATABASE_URL ?? 'postgres://leucent:leucent@localhost:5432/leucent',
       BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET ?? 'dev-secret-change-me-32-bytes-long!',
       BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
       REALTIME_SERVER_URL: process.env.REALTIME_SERVER_URL ?? 'http://localhost:4000',

@@ -1,4 +1,4 @@
-# Bleucent — connecting Railway and Vercel
+# Leucent — connecting Railway and Vercel
 
 This is the operator's checklist for taking the monorepo from `pnpm dev` to a
 publicly reachable interview platform. Read this once end-to-end before
@@ -39,11 +39,11 @@ but the CLI is far faster for the env-var dance below.
 
 ### 1a. Neon Postgres
 
-1. https://console.neon.tech → **New Project** → name it `bleucent-prod`,
+1. https://console.neon.tech → **New Project** → name it `leucent-prod`,
    region close to your Vercel deployment region (e.g. `aws-us-east-2`).
 2. After creation, open the project's **Settings → Connection details**.
    Copy the pooled connection string — that becomes `DATABASE_URL`.
-3. Open **Settings → API keys** → **Generate new key**. Name it `bleucent-ci`.
+3. Open **Settings → API keys** → **Generate new key**. Name it `leucent-ci`.
    This becomes `NEON_API_KEY` (the sandbox-provisioner uses it to branch
    the DB per interview).
 4. Note two more values from the dashboard URL/Settings:
@@ -56,7 +56,7 @@ but the CLI is far faster for the env-var dance below.
 6. Run the schema migrations from your laptop the first time:
    ```bash
    set -a && . ./.env.production && set +a
-   pnpm --filter @bleucent/db migrate
+   pnpm --filter @leucent/db migrate
    ```
    (after this is automated in CI you'll never run it by hand again.)
 
@@ -64,12 +64,12 @@ but the CLI is far faster for the env-var dance below.
 
 Either Cloudflare R2 (recommended — egress-free) or AWS S3.
 
-1. Create a bucket called `bleucent-replays`.
+1. Create a bucket called `leucent-replays`.
 2. Generate an access key pair scoped to **that one bucket**, with both
    `s3:GetObject` and `s3:PutObject`. R2 calls these "API tokens".
 3. Capture five env values:
    ```
-   S3_BUCKET=bleucent-replays
+   S3_BUCKET=leucent-replays
    S3_REGION=auto              # for R2; for AWS use e.g. us-east-1
    S3_ENDPOINT=https://<account>.r2.cloudflarestorage.com   # omit for AWS
    S3_ACCESS_KEY_ID=...
@@ -105,7 +105,7 @@ commits don't trigger noisy redeploys.
 
 ```bash
 railway login
-railway init                  # name: bleucent-backend
+railway init                  # name: leucent-backend
 ```
 
 Or via the dashboard: https://railway.app/new → **Deploy from GitHub repo**
@@ -123,7 +123,7 @@ Repeat this three times, once per service:
 
 In the dashboard:
 
-1. **+ New** → **GitHub Repo** → pick the bleucent repo → branch `main`.
+1. **+ New** → **GitHub Repo** → pick the leucent repo → branch `main`.
 2. **Settings → Source → Root Directory** → set the path from the table.
 3. **Settings → Build → Dockerfile Path** → leave default; each service has
    its own `Dockerfile` next to `package.json`.
@@ -145,7 +145,7 @@ DATABASE_URL=${NEON_DATABASE_URL}
 REALTIME_JWT_SECRET=${REALTIME_JWT_SECRET}
 REALTIME_INTERNAL_TOKEN=${REALTIME_INTERNAL_TOKEN}
 RUST_LOG=info
-S3_BUCKET=bleucent-replays
+S3_BUCKET=leucent-replays
 S3_REGION=auto
 S3_ENDPOINT=https://${R2_ACCOUNT}.r2.cloudflarestorage.com
 S3_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
@@ -159,7 +159,7 @@ PORT=4000
 DATABASE_URL=${NEON_DATABASE_URL}
 REALTIME_INTERNAL_TOKEN=${REALTIME_INTERNAL_TOKEN}
 REALTIME_SERVER_URL=https://realtime.up.railway.app
-WEB_APP_URL=https://bleucent.app
+WEB_APP_URL=https://leucent.app
 SANDBOX_PROVISIONER_URL=http://sandbox-provisioner.railway.internal:6000
 LITELLM_DEFAULT_MODEL=gpt-4o-mini
 OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -179,8 +179,8 @@ REALTIME_INTERNAL_TOKEN=${REALTIME_INTERNAL_TOKEN}
 NEON_API_KEY=${NEON_API_KEY}
 NEON_PROJECT_ID=${NEON_PROJECT_ID}
 NEON_PARENT_BRANCH_ID=${NEON_PARENT_BRANCH_ID}
-NEON_ROLE=bleucent
-NEON_DATABASE=bleucent
+NEON_ROLE=leucent
+NEON_DATABASE=leucent
 DOCKER_HOST=tcp://docker-dind.railway.internal:2375
 SANDBOX_IMAGE=ghcr.io/${YOUR_GH_ORG}/sandbox-base:latest
 SANDBOX_MEM_LIMIT=1g
@@ -218,12 +218,12 @@ localhost:6000/health`.
 ### 4a. Import the repo
 
 ```bash
-cd /Users/cmaccarp/bleucent
+cd /Users/cmaccarp/leucent
 vercel link                   # follow prompts, pick "Create new project"
 ```
 
 Or via dashboard: https://vercel.com/new → **Import Git Repository** → pick
-`bleucent`.
+`leucent`.
 
 Critical project settings:
 
@@ -238,7 +238,7 @@ Critical project settings:
 
 `apps/web/vercel.json` already does the right `cd ../.. && pnpm install`
 
-- `pnpm --filter @bleucent/web build` dance, so do not override these
+- `pnpm --filter @leucent/web build` dance, so do not override these
   fields manually.
 
 ### 4b. Set environment variables
@@ -249,14 +249,14 @@ Critical project settings:
 ```env
 DATABASE_URL=${NEON_DATABASE_URL}
 BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-BETTER_AUTH_URL=https://bleucent.app
+BETTER_AUTH_URL=https://leucent.app
 REALTIME_SERVER_URL=https://realtime-production-XXXX.up.railway.app
 REALTIME_INTERNAL_TOKEN=${REALTIME_INTERNAL_TOKEN}
 REALTIME_JWT_SECRET=${REALTIME_JWT_SECRET}
 AI_ORCHESTRATOR_URL=https://ai-orchestrator-production-XXXX.up.railway.app
 SANDBOX_PROVISIONER_URL=https://sandbox-provisioner-production-XXXX.up.railway.app
 NEXT_PUBLIC_REALTIME_WS_URL=wss://realtime-production-XXXX.up.railway.app
-S3_BUCKET=bleucent-replays
+S3_BUCKET=leucent-replays
 S3_REGION=auto
 S3_ENDPOINT=https://${R2_ACCOUNT}.r2.cloudflarestorage.com
 S3_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
@@ -277,7 +277,7 @@ NEON_PARENT_BRANCH_ID=${NEON_PARENT_BRANCH_ID}
 
 ### 4c. Configure the production domain
 
-**Settings → Domains** → add `bleucent.app` (or your domain). Vercel issues
+**Settings → Domains** → add `leucent.app` (or your domain). Vercel issues
 the cert automatically. Then update `BETTER_AUTH_URL` to match.
 
 ### 4d. Deploy
@@ -288,7 +288,7 @@ vercel --prod
 
 Vercel will build, run the workspace install, and surface a URL within
 ~90s. Tail the build logs in the dashboard if something fails — the
-Bleucent build needs the workspace dependencies to compile first, which is
+Leucent build needs the workspace dependencies to compile first, which is
 what `vercel.json` handles.
 
 ---
@@ -299,7 +299,7 @@ Once Vercel reports a healthy production deploy:
 
 ```bash
 ./scripts/smoke.sh \
-  https://bleucent.app \
+  https://leucent.app \
   https://realtime-production-XXXX.up.railway.app \
   https://ai-orchestrator-production-XXXX.up.railway.app
 ```
