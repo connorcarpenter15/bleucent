@@ -74,7 +74,10 @@ export function env(): Env {
       fieldErrors,
     );
     cached = {
-      DATABASE_URL: process.env.DATABASE_URL ?? 'postgres://leucent:leucent@localhost:5432/leucent',
+      // Unreachable placeholder (RFC 2606 `.invalid`) — set `DATABASE_URL` in `.env` to your Neon dev branch.
+      DATABASE_URL:
+        process.env.DATABASE_URL ??
+        'postgres://leucent:dev-only-placeholder@db.invalid:5432/leucent?sslmode=require',
       NEON_AUTH_BASE_URL: process.env.NEON_AUTH_BASE_URL ?? 'http://localhost:9999/dev-neon-auth',
       NEON_AUTH_COOKIE_SECRET:
         process.env.NEON_AUTH_COOKIE_SECRET ?? 'dev-neon-auth-cookie-secret-32-bytes-long-ok',

@@ -29,4 +29,6 @@ Containers are launched with:
 When `NEON_API_KEY` is set we create a fresh Neon branch per interview and
 poll `SELECT 1` with exponential backoff (250ms → 5s, 30s budget) before
 returning `status: "ready"`. Without Neon configured we fall back to the
-shared local Postgres `DATABASE_URL` from the root env so dev still works.
+root `DATABASE_URL` (your Neon **development branch** in local work, or a
+rare optional Docker Postgres via `pnpm compose:up:local-pg`) so local dev
+still works.

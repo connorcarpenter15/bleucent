@@ -8,15 +8,21 @@ See [`AGENTS.md`](./AGENTS.md) for the architecture overview and developer quick
 
 ## Quickstart
 
+Copy [`.env.example`](./.env.example) to `.env` and set a **Neon dev branch**
+`DATABASE_URL` (pooled) plus Neon Auth and service secrets. Then:
+
 ```bash
-cp .env.example .env
 pnpm install
 pnpm compose:up
 pnpm --filter @leucent/db migrate
 pnpm dev
 ```
 
-Open [http://localhost:3000].
+`pnpm compose:up` starts **MinIO and Docker-in-Docker** for replay/sandboxes only.
+Postgres is expected to come from **Neon**, not a local Docker image.
+
+Open [http://localhost:3000]. See [AGENTS.md](./AGENTS.md) for the full
+architecture and optional `compose:up:local-pg` (legacy Docker Postgres).
 
 ## Repository layout
 
@@ -31,7 +37,7 @@ packages/
   db/                     Drizzle schema + migrations for Neon Postgres
   ui/                     Shared React components + Tailwind preset
 infra/
-  docker-compose.yml      Local dev: postgres-with-pgvector, MinIO, Docker-in-Docker
+  docker-compose.yml        Local dev: MinIO, Docker-in-Docker; optional Docker Postgres (profile)
 ```
 
 ## License

@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Field, Input } from '@leucent/ui';
+import { PasswordInput } from '@/components/PasswordInput';
 import { signIn } from '@/lib/auth-client';
+import { messageFromAuthError } from '@/lib/auth-errors';
 
 export function LoginForm() {
   const router = useRouter();
@@ -13,24 +15,39 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const result = await signIn.email({ email, password });
-    setLoading(false);
-    if (result.error) {
-      setError(result.error.message ?? 'Sign in failed');
-      return;
+    try {
+      const result = await signIn.email({ email: email.trim(), password });
+      if (result.error) {
+        setError(
+          messageFromAuthError(
+            result.error,
+            'Could not sign in. Check your email and password and try again.',
+          ),
+        );
+        return;
+      }
+      router.push('/dashboard');
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : 'Something went wrong. Check your connection and try again.',
+      );
+    } finally {
+      setLoading(false);
     }
-    router.push('/dashboard');
   }
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
       <Field label="Email">
         <Input
           type="email"
+          inputMode="email"
           autoComplete="email"
           required
           value={email}
@@ -38,18 +55,21 @@ export function LoginForm() {
         />
       </Field>
       <Field label="Password">
-        <Input
-          type="password"
+        <PasswordInput
           autoComplete="current-password"
           required
+          name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </Field>
       {error && (
-        <p className="rounded-md border border-red-700/60 bg-red-900/30 px-3 py-2 text-sm text-red-200">
+        <div
+          role="alert"
+          className="rounded-md border border-red-700/60 bg-red-900/30 px-3 py-2 text-sm text-red-200"
+        >
           {error}
-        </p>
+        </div>
       )}
       <Button type="submit" disabled={loading} size="lg">
         {loading ? 'Signing in…' : 'Sign in'}

@@ -8,6 +8,11 @@ before they finish booting.
 `INFRA.md` describes the topology and per-service env contracts at a high
 level. This document is the click-by-click walkthrough.
 
+**Local `pnpm dev` on your laptop:** use a [Neon development
+branch](https://neon.com/docs/introduction/branching) (pooled
+`DATABASE_URL` + Auth on that branch) — _not_ a local Docker Postgres. See
+[`AGENTS.md`](./AGENTS.md#local-dev-quickstart) and [`.env.example`](./.env.example).
+
 ---
 
 ## 0. Prerequisites (one-time, ~5 minutes)

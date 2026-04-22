@@ -1,6 +1,6 @@
 /**
  * Applies the latest Drizzle migrations against DATABASE_URL.
- * Used both for local dev (against the docker-compose Postgres) and CI.
+ * Used for local dev (Neon dev branch or CI Postgres) and production deploys.
  */
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';

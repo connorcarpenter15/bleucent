@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "compose:up": "docker compose -f infra/docker-compose.yml up -d",
+    "compose:up:local-pg": "docker compose -f infra/docker-compose.yml --profile local-postgres up -d",
     "compose:down": "docker compose -f infra/docker-compose.yml down -v",
     "compose:logs": "docker compose -f infra/docker-compose.yml logs -f"
   },
