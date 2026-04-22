@@ -5,7 +5,8 @@
  * Loads `<repo>/.env` then `<repo>/.env.local` (override) into `process.env`
  * before spawning Turbo. Without this, a root-only `.env` is invisible to
  * `next dev` (which only auto-loads `apps/web/.env*`) and to packages whose
- * cwd is not the repo root.
+ * cwd is not the repo root. Put your Neon *development branch* `DATABASE_URL`
+ * here so every service matches production Postgres behavior locally.
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';

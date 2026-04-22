@@ -1,8 +1,13 @@
 name: leucent
 
 services:
+  # Optional: local Postgres + pgvector (legacy). Not started by default — local
+  # dev is expected to use a Neon *development branch* (see .env.example + AGENTS.md).
+  #   docker compose -f infra/docker-compose.yml --profile local-postgres up -d
   postgres:
     image: pgvector/pgvector:pg16
+    profiles:
+      - local-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: leucent

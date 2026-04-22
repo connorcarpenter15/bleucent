@@ -27,8 +27,9 @@ pnpm install                # install all JS deps across the workspace
 pnpm dev                    # turbo run dev --parallel (starts everything)
 pnpm build                  # turbo run build
 pnpm typecheck              # tsc across all TS packages
-pnpm compose:up             # bring up postgres + minio + dind for local dev
-pnpm compose:down           # tear down local infra
+pnpm compose:up             # MinIO + Docker-in-Docker (no local Postgres; use a Neon dev branch)
+pnpm compose:up:local-pg    # optional: add Docker Postgres + pgvector (legacy / extension testing)
+pnpm compose:down             # tear down local infra
 ```
 
 Per-app commands (Rust/Python apps expose them through `package.json` so Turbo can drive them):
@@ -50,12 +51,25 @@ pnpm --filter @leucent/sandbox-provisioner dev  # uv run uvicorn ...
 
 ## Local dev quickstart
 
+Local development uses a **Neon development branch** for Postgres (same
+stack as production: branching, `neon_auth` schema, Neon Auth). Create a
+branch in the [Neon Console](https://console.neon.tech), copy the **pooled**
+`DATABASE_URL` and the Neon Auth `NEON_AUTH_BASE_URL` / cookie secret for
+that branch, and put them in a repo-root `.env` (see [`.env.example`](./.env.example)).
+
 ```bash
-cp .env.example .env
+cp .env.example .env        # then edit: DATABASE_URL, NEON_*, and service secrets
 pnpm install
-pnpm compose:up         # starts postgres-with-pgvector, minio, dind
+pnpm compose:up             # MinIO + dind for replay storage + sandboxes; no Docker Postgres
 pnpm --filter @leucent/db migrate
 pnpm dev
 ```
 
 Then open http://localhost:3000.
+
+If you use the AI RAG path, enable **`pgvector` on the dev branch** once (Neon
+SQL Editor: `CREATE EXTENSION IF NOT EXISTS vector;` — see `DEPLOY.md`).
+
+`pnpm compose:up:local-pg` is available if you explicitly need a **Docker
+Postgres + pgvector** container on `localhost:5432` (older workflow). It
+is not required for most contributors now that the app targets Neon locally.
