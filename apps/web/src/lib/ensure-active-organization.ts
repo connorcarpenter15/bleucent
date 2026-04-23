@@ -2,9 +2,7 @@
 
 import { authClient } from './auth-client';
 
-export type EnsureOrgResult =
-  | { ok: true }
-  | { ok: false; message: string };
+export type EnsureOrgResult = { ok: true } | { ok: false; message: string };
 
 /**
  * Ensures the Neon Auth session has an active organization when the user
