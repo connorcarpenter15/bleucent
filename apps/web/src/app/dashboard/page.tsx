@@ -6,6 +6,7 @@ import { schema } from '@leucent/db';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { SiteShell } from '@/components/SiteShell';
+import { DeleteInterviewButton } from '@/components/DeleteInterviewButton';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Dashboard' };
@@ -83,7 +84,7 @@ export default async function DashboardPage() {
                       Created {new Date(iv.createdAt).toLocaleString()}
                     </span>
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
                     <Link href={`/interviews/${iv.id}/conduct`}>
                       <Button size="sm">Open console</Button>
                     </Link>
@@ -94,6 +95,11 @@ export default async function DashboardPage() {
                         </Button>
                       </Link>
                     )}
+                    <DeleteInterviewButton
+                      interviewId={iv.id}
+                      title={iv.title}
+                      status={iv.status}
+                    />
                   </div>
                 </CardBody>
               </Card>
