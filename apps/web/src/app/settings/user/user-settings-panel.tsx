@@ -109,9 +109,8 @@ export function UserSettingsPanel() {
             <p className="mt-0.5 text-surface-100">{user.email}</p>
           </div>
           <div>
-            <span className="text-surface-500">Account id</span>
+            <span className="text-surface-500">User id</span>
             <p className="mt-0.5 font-mono text-xs text-surface-400">{user.id}</p>
-            <p className="mt-1 text-xs text-surface-500">Share this only if support asks for it.</p>
           </div>
           {user.emailVerified === false && (
             <p className="text-amber-300/90">This email address is not verified yet.</p>

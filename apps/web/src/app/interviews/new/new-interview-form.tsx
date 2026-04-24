@@ -11,7 +11,7 @@ export function NewInterviewForm() {
   const [candidateName, setCandidateName] = useState('');
   const [candidateEmail, setCandidateEmail] = useState('');
   const [constraints, setConstraints] = useState(
-    'Example: Prefer the standard library only.\nExample: No paid third-party services.',
+    'Use async asyncpg instead of psycopg2.\nNo external API calls.',
   );
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -71,8 +71,8 @@ export function NewInterviewForm() {
         </Field>
       </div>
       <Field
-        label="Starting notes for the assistant"
-        hint="One short rule per line. The assistant sees these throughout the interview. You can change them anytime from your interviewer view."
+        label="Initial AI constraints"
+        hint="One per line. Injected into every AI prompt during the session. You can add or remove constraints live from the interviewer console."
       >
         <Textarea rows={5} value={constraints} onChange={(e) => setConstraints(e.target.value)} />
       </Field>

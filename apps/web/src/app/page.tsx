@@ -1,34 +1,59 @@
 import Link from 'next/link';
 import { Badge, Button, Card, CardBody, CardHeader, CardTitle, Container } from '@leucent/ui';
 import { SiteShell } from '@/components/SiteShell';
-import { HOME_FEATURES_SUMMARY } from '@/lib/marketing-features';
 
 // SiteShell reads the session via Neon Auth, which requires dynamic rendering.
 export const dynamic = 'force-dynamic';
+
+const FEATURES = [
+  {
+    title: 'Real-time canvas + IDE',
+    body: 'React Flow + Monaco synchronized over Yjs CRDTs. Zero merge conflicts, even when both participants type at once. Awareness and cursors come for free.',
+    badge: 'Realtime',
+  },
+  {
+    title: 'Context-aware AI co-pilot',
+    body: 'The orchestrator injects the live filesystem, the architecture canvas, and any interviewer constraints into every prompt — so guidance is always grounded in what the candidate is actually doing.',
+    badge: 'AI',
+  },
+  {
+    title: 'Ephemeral sandboxes',
+    body: 'Each interview gets its own hardened Docker container and an isolated Neon database branch, torn down the moment the session ends. No noisy neighbors, no shared state.',
+    badge: 'Isolation',
+  },
+  {
+    title: 'Perfect replay',
+    body: 'Every keystroke, canvas op, AI prompt, and exec run is captured as a CRDT update + telemetry stream. Scrub a finished interview at variable speed with cumulative stats.',
+    badge: 'Audit',
+  },
+  {
+    title: 'Interviewer console',
+    body: 'A read-only mirror of the candidate&apos;s editor and canvas, an action log with semantic summaries, the AI conversation, and a constraint editor — all in one screen.',
+    badge: 'Observe',
+  },
+  {
+    title: 'Built for teams',
+    body: 'Neon Auth organizations and roles out of the box. Single-use candidate invite tokens. JWT-scoped realtime sessions. Per-interview Neon branches for blast-radius containment.',
+    badge: 'Enterprise',
+  },
+];
 
 const STEPS = [
   {
     n: '01',
     title: 'Schedule',
-    body: 'From your dashboard, add the interview details and invite the candidate. Leucent prepares a private workspace and a simple link they use to join—no installs required on their side.',
+    body: 'Create the interview from the dashboard with a title, candidate, and starting AI constraints. Leucent provisions a Neon branch and mints a single-use join link.',
   },
   {
     n: '02',
-    title: 'Run the session',
-    body: 'The candidate codes and sketches while you watch in your interviewer view. You can follow the timeline, adjust the exercise, and decide how much automated help is appropriate.',
+    title: 'Conduct',
+    body: 'The candidate joins their workspace; you open the console. Code, canvas, AI traffic, and exec output stream live in both directions over a single Yjs room.',
   },
   {
     n: '03',
-    title: 'Review afterward',
-    body: 'When the interview is over, walk through what happened at your own pace. Playback is there for debriefs, hiring decisions, and getting aligned with teammates who were not in the room.',
+    title: 'Review',
+    body: 'On End Interview, the realtime server flushes the full event log to S3. Replay the session at 0.5×–8× to see exactly how the candidate thought through the problem.',
   },
-];
-
-const SECURITY_POINTS = [
-  'Each interview uses its own short-lived workspace instead of sharing one long-lived machine.',
-  'Candidate links are single-use and tied to the interview you created.',
-  'Interview data is packaged up when the session ends the way your team expects—not left scattered across personal laptops.',
-  'Team accounts and roles so the right people can schedule, run, or review sessions.',
 ];
 
 export default function HomePage() {
@@ -54,15 +79,15 @@ function Hero() {
             Beta · invite only
           </Badge>
           <h1 className="font-display text-5xl font-semibold tracking-tight text-surface-50 sm:text-6xl">
-            Technical interviews you can
+            Synchronous, observable
             <span className="block bg-accent-gradient bg-clip-text text-transparent">
-              actually observe.
+              technical interviews.
             </span>
           </h1>
           <p className="max-w-2xl text-lg text-surface-300">
-            Leucent gives candidates a real coding surface and a simple way to draw architecture
-            ideas—while you follow along live and replay the session afterward. Less guessing what
-            happened off-screen; more confidence in what you saw.
+            Leucent gives candidates a real IDE, a system-design canvas, and an AI co-pilot — and
+            gives interviewers a live console with perfect playback after the fact. Run the loop you
+            actually want, not the one a shared Google Doc forces on you.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link href="/signup">
@@ -77,15 +102,15 @@ function Hero() {
           <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-surface-400">
             <span className="inline-flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
-              Live workspace for everyone
+              Yjs CRDT sync
             </span>
             <span className="inline-flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
-              Fresh session per interview
+              Per-interview Neon branch
             </span>
             <span className="inline-flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
-              Locked-down candidate environment
+              Hardened Docker sandbox
             </span>
           </div>
         </div>
@@ -110,44 +135,42 @@ function HeroPreview() {
             <span className="h-2.5 w-2.5 rounded-full bg-surface-700" />
             <span className="h-2.5 w-2.5 rounded-full bg-surface-700" />
           </div>
-          <span className="text-xs text-surface-500">Interview · backend exercise</span>
+          <span className="text-xs text-surface-500">interview · senior-backend-loop</span>
           <Badge tone="success" dot>
             live
           </Badge>
         </div>
         <div className="grid grid-cols-12">
           <div className="col-span-7 border-r border-surface-800 bg-surface-925 p-4 font-mono text-xs leading-relaxed text-surface-300">
-            <pre className="whitespace-pre-wrap">{`def count_paths(graph, start, end):
-    """How many distinct routes from start to end?"""
-    seen = set()
-    stack = [(start, [start])]
-    total = 0
-    while stack:
-        node, path = stack.pop()
-        if node == end:
-            total += 1
-            continue
-        for nxt in graph.get(node, []):
-            if nxt not in path:
-                stack.append((nxt, path + [nxt]))
-    return total`}</pre>
+            <pre className="whitespace-pre-wrap">{`def solve(graph: dict[str, list[str]]) -> int:
+    """Find the longest path in a DAG. O(V + E)."""
+    indegree = {n: 0 for n in graph}
+    for n, edges in graph.items():
+        for e in edges:
+            indegree[e] += 1
+    order = topo_sort(graph, indegree)
+    dist = {n: 0 for n in graph}
+    for n in order:
+        for e in graph[n]:
+            dist[e] = max(dist[e], dist[n] + 1)
+    return max(dist.values())`}</pre>
           </div>
           <div className="col-span-5 flex flex-col">
             <div className="border-b border-surface-800 px-4 py-2 text-[11px] uppercase tracking-wider text-surface-500">
-              Assistant
+              AI co-pilot
             </div>
             <div className="space-y-2 p-4 text-xs">
               <div className="rounded-md border border-surface-700 bg-surface-800/40 p-2 text-surface-200">
-                Talk me through how you avoid counting the same loop twice.
+                Walk me through your topo_sort implementation.
               </div>
               <div className="rounded-md border border-accent-700/50 bg-accent-500/10 p-2 text-surface-100">
-                I only extend the path when the next city is not already on the current route, so
-                cycles cannot inflate the count.
+                Kahn&apos;s algorithm — pop nodes with indegree 0, decrement neighbors, repeat.
+                O(V+E) and detects cycles via residual count.
               </div>
             </div>
             <div className="mt-auto border-t border-surface-800 bg-surface-925 px-4 py-2 text-[11px] text-surface-500">
-              <span className="text-accent-300">Interviewer</span> added a note: &quot;Please do not
-              use a third-party shortest-path library.&quot;
+              <span className="text-accent-300">interviewer</span> added constraint: &quot;no
+              third-party graph libraries&quot;
             </div>
           </div>
         </div>
@@ -157,30 +180,30 @@ function HeroPreview() {
 }
 
 function Features() {
-  const { eyebrow, title, lead, bullets } = HOME_FEATURES_SUMMARY;
-
   return (
     <section id="features" className="border-b border-surface-800/80 py-24">
       <Container size="xl">
-        <div className="mb-10 max-w-2xl">
-          <Badge tone="accent">{eyebrow}</Badge>
+        <div className="mb-12 max-w-2xl">
+          <Badge tone="accent">Platform</Badge>
           <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-surface-50 sm:text-4xl">
-            {title}
+            Everything an interview loop needs, nothing it doesn&apos;t.
           </h2>
-          <p className="mt-3 text-surface-400">{lead}</p>
-          <ul className="mt-6 flex flex-col gap-3 text-sm text-surface-300">
-            {bullets.map((line) => (
-              <li key={line} className="flex items-start gap-3">
-                <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-accent-500 shadow-[0_0_6px_rgba(47,116,255,0.8)]" />
-                <span>{line}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8">
-            <Link href="/features">
-              <Button size="lg">See all features</Button>
-            </Link>
-          </div>
+          <p className="mt-3 text-surface-400">
+            Built around a single shared CRDT room per interview, with everything else — AI,
+            sandbox, telemetry — orbiting that source of truth.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((f) => (
+            <Card key={f.title} className="h-full">
+              <CardHeader>
+                <CardTitle>{f.title}</CardTitle>
+                <Badge tone="accent">{f.badge}</Badge>
+              </CardHeader>
+              <CardBody className="text-sm text-surface-300">{f.body}</CardBody>
+            </Card>
+          ))}
         </div>
       </Container>
     </section>
@@ -194,11 +217,11 @@ function HowItWorks() {
         <div className="mb-12 max-w-2xl">
           <Badge tone="accent">How it works</Badge>
           <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-surface-50 sm:text-4xl">
-            Three simple beats: schedule, run, review.
+            Three surfaces, one source of truth.
           </h2>
           <p className="mt-3 text-surface-400">
-            You stay focused on the conversation and the signal—not on duct-taping screen shares,
-            shared docs, and timer apps together.
+            A single Yjs room per interview powers the candidate workspace, the interviewer console,
+            and replay. The Rust realtime server is the only thing that talks to S3.
           </p>
         </div>
 
@@ -225,18 +248,25 @@ function Security() {
     <section id="security" className="border-b border-surface-800/80 py-24">
       <Container size="xl" className="grid gap-10 md:grid-cols-2">
         <div>
-          <Badge tone="accent">Security and privacy</Badge>
+          <Badge tone="accent">Security</Badge>
           <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-surface-50 sm:text-4xl">
-            Sessions are meant to start clean—and end clean.
+            Isolated by construction.
           </h2>
           <p className="mt-3 text-surface-400">
-            Candidates should feel they are in a professional, bounded environment—not on someone
-            else&apos;s personal laptop. Your team should feel the same about where interview
-            artifacts live.
+            Every interview runs in its own hardened sandbox container with no network by default,
+            an explicit egress allowlist, CPU/memory/PID caps, and a read-only root filesystem. The
+            candidate&apos;s database is a per-interview Neon branch, blown away when the session
+            ends.
           </p>
         </div>
         <div className="grid gap-3">
-          {SECURITY_POINTS.map((line) => (
+          {[
+            'JWT-scoped websocket sessions, per interview, expiring with the room',
+            'Single-use candidate invite tokens, hashed at rest',
+            'Per-interview Neon branch with strict readiness probe before signaling ready',
+            'S3 flush only on explicit End Interview or idle GC',
+            'Neon Auth organizations + role-based access for interviewers',
+          ].map((line) => (
             <div
               key={line}
               className="flex items-start gap-3 rounded-lg border border-surface-800 bg-surface-900/60 px-4 py-3"
@@ -259,15 +289,15 @@ function CallToAction() {
           <div className="leucent-glow pointer-events-none absolute inset-0" />
           <div className="relative">
             <h2 className="font-display text-3xl font-semibold tracking-tight text-surface-50 sm:text-4xl">
-              Ready to try a better interview loop?
+              Run your next loop on Leucent.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-surface-300">
-              Create a workspace for your team, send your first candidate link, and see whether live
-              observation fits how you hire.
+              Spin up an organization in under a minute, send your first candidate a join link, and
+              stop pretending a shared Google Doc is an interview tool.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link href="/signup">
-                <Button size="lg">Create a workspace</Button>
+                <Button size="lg">Create an organization</Button>
               </Link>
               <Link href="/login">
                 <Button size="lg" variant="outline">

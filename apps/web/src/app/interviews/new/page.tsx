@@ -23,8 +23,8 @@ export default async function NewInterviewPage() {
               New interview
             </h1>
             <p className="mt-1 text-sm text-surface-400">
-              When you save, we prepare a private workspace and a one-time link you can send to the
-              candidate.
+              Leucent will provision a Neon branch and mint a single-use candidate join link as soon
+              as you submit.
             </p>
           </div>
         </div>
