@@ -55,7 +55,10 @@ class Settings(BaseSettings):
     readiness_max_delay: float = 5.0
 
     bind_host: str = "0.0.0.0"
-    bind_port: int = 6000
+    # NOTE: avoid 6000 — it's on the WHATWG Fetch "bad ports" blocklist
+    # (historical X11 port), so Node's built-in fetch (undici) refuses to
+    # connect with `TypeError: fetch failed` / cause "bad port".
+    bind_port: int = 6500
 
 
 @lru_cache(maxsize=1)
