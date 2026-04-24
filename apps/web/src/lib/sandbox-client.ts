@@ -97,7 +97,7 @@ export async function createSandbox(args: {
     const detail = describeFetchError(cause);
     throw new Error(
       `Cannot connect to sandbox provisioner${origin ? ` at ${origin}` : ''}. ` +
-        `Verify the service is listening (e.g. \`lsof -iTCP -sTCP:LISTEN | grep 6000\`) ` +
+        `Verify the service is listening (e.g. \`lsof -iTCP -sTCP:LISTEN | grep 6500\`) ` +
         `and that SANDBOX_PROVISIONER_URL points to it. Underlying error: ${detail}`,
       { cause },
     );
