@@ -17,7 +17,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     heading: 'Platform',
     links: [
-      { href: '/#features', label: 'Features' },
+      { href: '/features', label: 'Features' },
       { href: '/#how-it-works', label: 'How it works' },
       { href: '/#security', label: 'Security' },
     ],
@@ -34,7 +34,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
 type SiteShellProps = {
   children: ReactNode;
   /** Highlights the active link in the header. */
-  activeNav?: 'dashboard' | 'new' | 'home' | 'settings';
+  activeNav?: 'dashboard' | 'new' | 'home' | 'settings' | 'features';
   /** Drop the footer (used by full-screen workspace pages that opt-in). */
   hideFooter?: boolean;
   /** Render a minimal logo-only header (used on auth pages). */
@@ -59,11 +59,12 @@ export async function SiteShell({
   const links: NavLink[] = signedIn
     ? [
         { href: '/dashboard', label: 'Dashboard', active: activeNav === 'dashboard' },
-        { href: '/settings', label: 'Settings', active: activeNav === 'settings' },
+        { href: '/features', label: 'Features', active: activeNav === 'features' },
         { href: '/interviews/new', label: 'New interview', active: activeNav === 'new' },
+        { href: '/settings', label: 'Settings', active: activeNav === 'settings' },
       ]
     : [
-        { href: '/#features', label: 'Features' },
+        { href: '/features', label: 'Features', active: activeNav === 'features' },
         { href: '/#how-it-works', label: 'How it works' },
         { href: '/#security', label: 'Security' },
       ];
