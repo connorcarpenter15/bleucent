@@ -77,9 +77,14 @@ export default async function DashboardPage() {
                 <CardBody className="text-sm text-surface-300">
                   <div className="flex flex-col gap-1">
                     <span>
-                      Candidate: <span className="text-surface-100">{iv.candidateName}</span>
+                      Candidate:{' '}
+                      <span className="text-surface-100">
+                        {iv.candidateName?.trim() || iv.candidateEmail?.trim() || '—'}
+                      </span>
                     </span>
-                    <span className="text-surface-400">{iv.candidateEmail}</span>
+                    {iv.candidateEmail?.trim() ? (
+                      <span className="text-surface-400">{iv.candidateEmail}</span>
+                    ) : null}
                     <span className="text-xs text-surface-500">
                       Created {new Date(iv.createdAt).toLocaleString()}
                     </span>

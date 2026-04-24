@@ -61,3 +61,15 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
+
+
+def resolve_sandbox_image(template: str | None, default_image: str) -> str:
+    """Maps allowlisted template keys to Docker images. Unknown keys fall back."""
+    mapping: dict[str, str] = {
+        "nodejs": default_image,
+        "python_ds": default_image,
+        "rust": default_image,
+    }
+    if not template:
+        return default_image
+    return mapping.get(template, default_image)
